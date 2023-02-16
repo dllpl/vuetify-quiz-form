@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link
+      href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/@mdi/font@6.x/css/materialdesignicons.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css"
+      rel="stylesheet"
+    />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui"
+    />
+  </head>
+  <style>
+    .color_primary {
+      color: #79b285;
+    }
+    .theme--light.v-label {
+      color: black;
+    }
+    .v-input--radio-group legend.v-label {
+      font-size: 16px;
+    }
+  </style>
+  <body>
+    <div id="app">
+      <v-app>
+        <v-main>
+          <v-stepper v-model="e1">
+            <v-stepper-header>
+              <v-stepper-step :complete="e1 > 1" step="1" color="primary">
+                Услуга
+              </v-stepper-step>
+
+              <v-divider></v-divider>
+
+              <v-stepper-step :complete="e1 > 2" step="2" color="primary">
+                Запись на дату
+              </v-stepper-step>
+
+              <v-divider></v-divider>
+
+              <v-stepper-step :complete="e1 > 3" step="3" color="primary">
+                Контакты
+              </v-stepper-step>
+
+              <v-divider></v-divider>
+
+              <v-stepper-step :complete="e1 > 4" step="4" color="primary">
+                Тип оплаты
+              </v-stepper-step>
+
+              <v-divider></v-divider>
+
+              <v-stepper-step step="5"> Бронь </v-stepper-step>
+            </v-stepper-header>
+
+            <v-stepper-items>
+              <v-stepper-content step="1">
+                <v-card class="mb-12" flat>
+                  <v-card-title
+                    >Пожалуйста, выберите ваши варианты</v-card-title
+                  >
+                  <v-card-text>
+                    <v-row>
+                      <v-col lg="4" md="4" sm="4" col="6">
+                        <v-radio-group v-model="form.category" mandatory>
+                          <template v-slot:label>
+                            <div>Услуга</div>
+                          </template>
+                          <v-radio
+                            label="Техосмотр"
+                            value="Техосмотр"
+                          ></v-radio>
+                          <v-radio
+                            label="Учет в ГИБДД"
+                            value="Учет в ГИБДД"
+                          ></v-radio>
+                        </v-radio-group>
+                      </v-col>
+                      <v-col lg="4" md="4" sm="4" col="6">
+                        <v-radio-group v-model="form.typeCar">
+                          <template v-slot:label>
+                            <div>Тип ТС</div>
+                          </template>
+                          <v-radio label="Легковой" value="Легковой"></v-radio>
+                          <v-radio label="Грузовой" value="Грузовой"></v-radio>
+                        </v-radio-group>
+                      </v-col>
+                      <v-col lg="4" md="4" sm="4" col="12">
+                        <v-radio-group v-model="form.address">
+                          <template v-slot:label>
+                            <div>Адрес</div>
+                          </template>
+                          <v-radio
+                            label="Казань, ул. Заречная 3а (Константиновка) (1000 руб.)"
+                            value="Казань, ул. Заречная 3а (Константиновка)"
+                          ></v-radio>
+                          <v-radio
+                            label="Казань, ул. Проспект Победы 194 (ТТС) (1000 руб.)"
+                            value="Казань, ул. Проспект Победы 194 (ТТС)"
+                          ></v-radio>
+                        </v-radio-group>
+                      </v-col>
+                    </v-row>
+                  </v-card-text>
+                </v-card>
+
+                <v-btn color="primary" @click="e1 = 2"> Далее </v-btn>
+              </v-stepper-content>
+
+              <v-stepper-content step="2">
+                <v-card
+                  class="mb-12"
+                  color="grey lighten-1"
+                  height="200px"
+                ></v-card>
+
+                <v-btn color="primary" @click="e1 = 3"> Далее </v-btn>
+
+                <v-btn text @click="e1 = 1"> Назад </v-btn>
+              </v-stepper-content>
+
+              <v-stepper-content step="3">
+                <v-card
+                  class="mb-12"
+                  color="grey lighten-1"
+                  height="200px"
+                ></v-card>
+
+                <v-btn color="primary" @click="e1 = 1"> Далее </v-btn>
+
+                <v-btn text> Назад </v-btn>
+              </v-stepper-content>
+            </v-stepper-items>
+          </v-stepper>
+        </v-main>
+      </v-app>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/v-mask/dist/v-mask.min.js"></script>
+    <script>
+      new Vue({
+        el: "#app",
+        vuetify: new Vuetify({
+          theme: {
+            themes: {
+              light: {
+                primary: "#79b285",
+              },
+            },
+          },
+        }),
+        data() {
+          return {
+            e1: 1,
+            form: {
+              category: null,
+              typeCar: null,
+              address: null,
+            },
+          };
+        },
+      });
+      Vue.directive("mask", VueMask.VueMaskDirective);
+    </script>
+  </body>
+</html>
