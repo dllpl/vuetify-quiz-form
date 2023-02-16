@@ -50,16 +50,6 @@
               <v-stepper-step :complete="e1 > 3" step="3" color="primary">
                 Контакты
               </v-stepper-step>
-
-              <v-divider></v-divider>
-
-              <v-stepper-step :complete="e1 > 4" step="4" color="primary">
-                Тип оплаты
-              </v-stepper-step>
-
-              <v-divider></v-divider>
-
-              <v-stepper-step step="5"> Бронь </v-stepper-step>
             </v-stepper-header>
 
             <v-stepper-items>
@@ -84,6 +74,17 @@
                             value="Учет в ГИБДД"
                           ></v-radio>
                         </v-radio-group>
+                        <v-alert
+                          dense
+                          border="left"
+                          text
+                          color="warning"
+                          max-width="345"
+                          v-if="errors.find(error => error.type ===
+                        'category')"
+                        >
+                          {{errors.find(error => error.type ==='category').msg}}
+                        </v-alert>
                       </v-col>
                       <v-col lg="4" md="4" sm="4" col="6">
                         <v-radio-group v-model="form.typeCar">
@@ -93,6 +94,17 @@
                           <v-radio label="Легковой" value="Легковой"></v-radio>
                           <v-radio label="Грузовой" value="Грузовой"></v-radio>
                         </v-radio-group>
+                        <v-alert
+                          dense
+                          border="left"
+                          text
+                          color="warning"
+                          max-width="345"
+                          v-if="errors.find(error => error.type ===
+                        'typeCar')"
+                        >
+                          {{errors.find(error => error.type ==='typeCar').msg}}
+                        </v-alert>
                       </v-col>
                       <v-col lg="4" md="4" sm="4" col="12">
                         <v-radio-group v-model="form.address">
@@ -108,20 +120,41 @@
                             value="Казань, ул. Проспект Победы 194 (ТТС)"
                           ></v-radio>
                         </v-radio-group>
+                        <v-alert
+                          dense
+                          border="left"
+                          text
+                          color="warning"
+                          max-width="345"
+                          v-if="errors.find(error => error.type ===
+                        'address')"
+                        >
+                          {{errors.find(error => error.type ==='address').msg}}
+                        </v-alert>
                       </v-col>
                     </v-row>
                   </v-card-text>
                 </v-card>
-
-                <v-btn color="primary" @click="e1 = 2"> Далее </v-btn>
+                <v-btn color="primary" @click="nextStep(1,2)"> Далее </v-btn>
               </v-stepper-content>
 
               <v-stepper-content step="2">
-                <v-card
-                  class="mb-12"
-                  color="grey lighten-1"
-                  height="200px"
-                ></v-card>
+                <v-card class="mb-12" flat>
+                  <v-card-title>Выберите дату и время</v-card-title>
+                  <v-card-subtitle
+                    >Выберите желаемое время, чтобы продолжить
+                    бронирование</v-card-subtitle
+                  >
+                  <v-card-text>
+                    <v-date-picker
+                      v-model="picker"
+                      elevation="15"
+                      class="mt-4"
+                      min="2016-06-15"
+                      max="2018-03-20"
+                    ></v-date-picker>
+                  </v-card-text>
+                </v-card>
 
                 <v-btn color="primary" @click="e1 = 3"> Далее </v-btn>
 
@@ -166,8 +199,43 @@
               category: null,
               typeCar: null,
               address: null,
+              picker: new Date(
+                Date.now() - new Date().getTimezoneOffset() * 60000
+              )
+                .toISOString()
+                .substr(0, 10),
             },
+            errors: [],
           };
+        },
+        methods: {
+          nextStep(from, to) {
+            this.validate(from);
+
+            if (!this.errors.length) this.e1 = to;
+          },
+          validate(from) {
+            this.errors = [];
+            switch (from) {
+              case 1:
+                if (!this.form.category)
+                  this.errors.push({
+                    type: "category",
+                    msg: "Выберите категорию",
+                  });
+                if (!this.form.typeCar)
+                  this.errors.push({
+                    type: "typeCar",
+                    msg: "Выберите тип ТС",
+                  });
+                if (!this.form.address)
+                  this.errors.push({
+                    type: "address",
+                    msg: "Выберите адрес",
+                  });
+                break;
+            }
+          },
         },
       });
       Vue.directive("mask", VueMask.VueMaskDirective);
