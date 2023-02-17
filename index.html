@@ -146,13 +146,24 @@
                     бронирование</v-card-subtitle
                   >
                   <v-card-text>
-                    <v-date-picker
-                      v-model="picker"
-                      elevation="15"
-                      class="mt-4"
-                      min="2016-06-15"
-                      max="2018-03-20"
-                    ></v-date-picker>
+                    <v-row class="ml-2">
+                      <v-date-picker
+                        locale="ru-RU"
+                        :show-current="false"
+                        v-model="form.selectDay"
+                        elevation="5"
+                        class="mt-4"
+                        :min="datePicker.min"
+                        :max="datePicker.max"
+                      ></v-date-picker>
+                      <v-select
+                        v-model="form.selectTime"
+                        class="col-lg-3 col-md-4 col-sm-4 col-12 mt-4"
+                        label="Выберите время"
+                        :items="timePicker.times"
+                      >
+                      </v-select>
+                    </v-row>
                   </v-card-text>
                 </v-card>
 
@@ -190,23 +201,48 @@
                 primary: "#79b285",
               },
             },
+            lang: {},
           },
         }),
         data() {
           return {
-            e1: 1,
+            e1: 2,
+            datePicker: {
+              min: null,
+              max: null,
+            },
+            timePicker: {
+              times: [
+                "08:00",
+                "09:00",
+                "10:00",
+                "11:00",
+                "12:00",
+                "13:00",
+                "14:00",
+                "15:00",
+                "16:00",
+                "17:00",
+              ],
+            },
             form: {
               category: null,
               typeCar: null,
               address: null,
-              picker: new Date(
+              selectDay: new Date(
                 Date.now() - new Date().getTimezoneOffset() * 60000
               )
                 .toISOString()
                 .substr(0, 10),
+              selectTime: null,
             },
             errors: [],
           };
+        },
+        watch: {
+          "form.selectDay": (val) => {
+            console.log(val);
+          },
         },
         methods: {
           nextStep(from, to) {
@@ -236,6 +272,17 @@
                 break;
             }
           },
+          closePicker(v) {
+            v = v < 10 ? "0" + v : v;
+            this.timePicker.time = v + ":00";
+            this.timePicker.menu = false;
+          },
+        },
+        created() {
+          this.datePicker.min = new Date().toISOString().substr(0, 10);
+          let nextYearDate = new Date();
+          nextYearDate.setFullYear(nextYearDate.getFullYear() + 1);
+          this.datePicker.max = nextYearDate.toISOString().substr(0, 10);
         },
       });
       Vue.directive("mask", VueMask.VueMaskDirective);
