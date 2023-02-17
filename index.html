@@ -88,7 +88,7 @@
                         </v-alert>
                       </v-col>
                       <v-col lg="4" md="4" sm="4" col="6">
-                        <v-radio-group v-model="form.typeCar">
+                        <v-radio-group v-model="form.typeCar" mandatory>
                           <template v-slot:label>
                             <div>Тип ТС</div>
                           </template>
@@ -114,7 +114,7 @@
                         </v-alert>
                       </v-col>
                       <v-col lg="4" md="4" sm="4" col="12">
-                        <v-radio-group v-model="form.address">
+                        <v-radio-group v-model="form.address" mandatory>
                           <template v-slot:label>
                             <div>Адрес</div>
                           </template>
@@ -201,30 +201,41 @@
 
               <v-stepper-content step="3">
                 <v-card class="mb-12" flat v-if="step === 3">
-                  <v-form ref="form" v-model="valid" lazy-validation>
-                    <v-row>
-                      <v-col lg="3" md="6" sm="6" cols="12">
-                        <v-text-field
-                          v-model="name"
-                          :rules="nameRules"
-                          label="Имя"
-                          required
-                        ></v-text-field>
-                      </v-col>
-                      <v-col lg="3" md="6" sm="6" cols="12">
-                        <v-text-field
-                          v-model="phone"
-                          :rules="phoneRules"
-                          :counter="16"
-                          label="Телефон"
-                          v-mask="'+7(###)###-##-##'"
-                          type="text"
-                          placeholder="+7(___)___-__-__"
-                          required
-                        ></v-text-field>
-                      </v-col>
-                    </v-row>
-                  </v-form>
+                  <v-card-title>Заполните контактные данные</v-card-title>
+                  <v-card-subtitle
+                    >Вы выбрали:
+                    <strong>
+                      {{form.category}}. {{form.typeCar}}. По адресу:
+                      {{form.address}}. На {{form.selectDay}} в
+                      {{form.selectTime}}.</strong
+                    >
+                  </v-card-subtitle>
+                  <v-card-text>
+                    <v-form ref="formStep3" v-model="valid" lazy-validation>
+                      <v-row>
+                        <v-col lg="3" md="6" sm="6" cols="12">
+                          <v-text-field
+                            v-model="name"
+                            :rules="nameRules"
+                            label="Имя"
+                            required
+                          ></v-text-field>
+                        </v-col>
+                        <v-col lg="3" md="6" sm="6" cols="12">
+                          <v-text-field
+                            v-model="phone"
+                            :rules="phoneRules"
+                            :counter="16"
+                            label="Телефон"
+                            v-mask="'+7(###)###-##-##'"
+                            type="text"
+                            placeholder="+7(___)___-__-__"
+                            required
+                          ></v-text-field>
+                        </v-col>
+                      </v-row>
+                    </v-form>
+                  </v-card-text>
                 </v-card>
 
                 <v-btn color="primary" @click="step = 1"> Далее </v-btn>
@@ -285,7 +296,10 @@
             name: '',
             nameRules: [(v) => !!v || 'Заполните имя'],
             phone: '',
-            phoneRules: [(v) => !!v || 'Заполните телефон'],
+            phoneRules: [
+              (v) => !!v || 'Заполните телефон',
+              (v) => (v && v.length >= 16) || 'Внесите все цифры номера',
+            ],
           };
         },
         methods: {
@@ -324,6 +338,8 @@
           },
           getDate(date) {
             let body = { date };
+
+            this.form.selectDay = date;
 
             /** Запрос для получении инфы дня в т.ч. доступное время */
 
