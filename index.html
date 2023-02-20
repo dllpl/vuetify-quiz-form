@@ -29,6 +29,15 @@
     .v-input--radio-group legend.v-label {
       font-size: 16px;
     }
+    .fade-enter-active,
+    .fade-leave-active {
+      transition: opacity 0.5s ease;
+    }
+
+    .fade-enter-from,
+    .fade-leave-to {
+      opacity: 0;
+    }
   </style>
   <body>
     <div id="app">
@@ -43,7 +52,7 @@
               <v-divider></v-divider>
 
               <v-stepper-step :complete="step > 2" step="2" color="primary">
-                Запись на дату
+                Дата и время
               </v-stepper-step>
 
               <v-divider></v-divider>
@@ -60,86 +69,64 @@
                     >Пожалуйста, выберите ваши варианты</v-card-title
                   >
                   <v-card-text>
-                    <v-row>
-                      <v-col lg="4" md="4" sm="4" col="6">
-                        <v-radio-group v-model="form.category" mandatory>
-                          <template v-slot:label>
-                            <div>Услуга</div>
-                          </template>
-                          <v-radio
-                            label="Техосмотр"
-                            value="Техосмотр"
-                          ></v-radio>
-                          <v-radio
-                            label="Учет в ГИБДД"
-                            value="Учет в ГИБДД"
-                          ></v-radio>
-                        </v-radio-group>
-                        <v-alert
-                          dense
-                          border="left"
-                          text
-                          color="warning"
-                          max-width="345"
-                          v-if="errors.find(error => error.type ===
-                        'category')"
-                        >
-                          {{errors.find(error => error.type ==='category').msg}}
-                        </v-alert>
-                      </v-col>
-                      <v-col lg="4" md="4" sm="4" col="6">
-                        <v-radio-group v-model="form.typeCar" mandatory>
-                          <template v-slot:label>
-                            <div>Тип ТС</div>
-                          </template>
-                          <v-radio
-                            label="Легковой автомобиль"
-                            value="Легковой автомобиль"
-                          ></v-radio>
-                          <v-radio
-                            label="Грузовой автомобиль"
-                            value="Грузовой автомобиль"
-                          ></v-radio>
-                        </v-radio-group>
-                        <v-alert
-                          dense
-                          border="left"
-                          text
-                          color="warning"
-                          max-width="345"
-                          v-if="errors.find(error => error.type ===
-                        'typeCar')"
-                        >
-                          {{errors.find(error => error.type ==='typeCar').msg}}
-                        </v-alert>
-                      </v-col>
-                      <v-col lg="4" md="4" sm="4" col="12">
-                        <v-radio-group v-model="form.address" mandatory>
-                          <template v-slot:label>
-                            <div>Адрес</div>
-                          </template>
-                          <v-radio
-                            label="Казань, ул. Заречная 3а (Константиновка)"
-                            value="Казань, ул. Заречная 3а (Константиновка)"
-                          ></v-radio>
-                          <v-radio
-                            label="Казань, ул. Проспект Победы 194 (ТТС)"
-                            value="Казань, ул. Проспект Победы 194 (ТТС)"
-                          ></v-radio>
-                        </v-radio-group>
-                        <v-alert
-                          dense
-                          border="left"
-                          text
-                          color="warning"
-                          max-width="345"
-                          v-if="errors.find(error => error.type ===
-                        'address')"
-                        >
-                          {{errors.find(error => error.type ==='address').msg}}
-                        </v-alert>
-                      </v-col>
-                    </v-row>
+                    <v-form ref="formStep1" lazy-validation>
+                      <v-row>
+                        <v-col lg="4" md="4" sm="4" col="6">
+                          <v-radio-group
+                            v-model="form.category"
+                            :rules="rules.category"
+                          >
+                            <template v-slot:label>
+                              <div>Услуга</div>
+                            </template>
+                            <v-radio
+                              label="Техосмотр"
+                              value="Техосмотр"
+                            ></v-radio>
+                            <v-radio
+                              label="Учет в ГИБДД"
+                              value="Учет в ГИБДД"
+                            ></v-radio>
+                          </v-radio-group>
+                        </v-col>
+                        <v-col lg="4" md="4" sm="4" col="6">
+                          <v-radio-group
+                            v-model="form.typeCar"
+                            :rules="rules.typeCar"
+                          >
+                            <template v-slot:label>
+                              <div>Тип ТС</div>
+                            </template>
+                            <v-radio
+                              label="Легковой автомобиль"
+                              value="Легковой автомобиль"
+                            ></v-radio>
+                            <v-radio
+                              label="Грузовой автомобиль"
+                              value="Грузовой автомобиль"
+                            ></v-radio>
+                          </v-radio-group>
+                        </v-col>
+                        <v-col lg="4" md="4" sm="4" col="12">
+                          <v-radio-group
+                            v-model="form.address"
+                            :rules="rules.address"
+                          >
+                            <template v-slot:label>
+                              <div>Адрес</div>
+                            </template>
+                            <v-radio
+                              label="Казань, ул. Заречная 3а (Константиновка) 1000 р."
+                              value="Казань, ул. Заречная 3а (Константиновка) 1000 р."
+                            ></v-radio>
+                            <v-radio
+                              label="Казань, ул. Проспект Победы 194 (ТТС) 1000 р."
+                              value="Казань, ул. Проспект Победы 194 (ТТС) 1000 р."
+                            ></v-radio>
+                          </v-radio-group>
+                        </v-col>
+                      </v-row>
+                    </v-form>
                   </v-card-text>
                 </v-card>
                 <v-btn color="primary" @click="nextStep(1,2)"> Далее </v-btn>
@@ -157,46 +144,48 @@
                     >
                   </v-card-subtitle>
                   <v-card-text>
-                    <v-row>
-                      <v-col lg="3" md="6" sm="6" cols="12">
-                        <v-date-picker
-                          locale="ru-RU"
-                          :show-current="false"
-                          v-model="form.selectDay"
-                          class="mt-4"
-                          :min="datePicker.min"
-                          :max="datePicker.max"
-                          full-width
-                        ></v-date-picker>
-                      </v-col>
-                      <v-col lg="3" md="6" sm="6" cols="12">
-                        <v-select
-                          v-model="form.selectTime"
-                          label="Выберите время"
-                          :items="timePicker.times"
-                        >
-                        </v-select>
-                        <v-alert
-                          border="left"
-                          error-message="123"
-                          text
-                          color="warning"
-                          max-width="345"
-                          max-height="50"
-                          v-if="errors.find(error => error.type ===
-                        'selectTime')"
-                        >
-                          {{errors.find(error => error.type
-                          ==='selectTime').msg}}
-                        </v-alert>
-                      </v-col>
-                    </v-row>
+                    <v-form ref="formStep2" lazy-validation>
+                      <v-row>
+                        <v-col lg="3" md="6" sm="6" cols="12">
+                          <v-date-picker
+                            locale="ru-RU"
+                            :show-current="false"
+                            v-model="form.date"
+                            class="mt-4"
+                            :min="datePicker.min"
+                            :max="datePicker.max"
+                            full-width
+                            :rules="rules.date"
+                            @change="getTime(form.date)"
+                          ></v-date-picker>
+                        </v-col>
+                        <v-col lg="3" md="6" sm="6" cols="12">
+                          <v-select
+                            v-model="form.time"
+                            label="Выберите время"
+                            :items="timePicker.times"
+                            :rules="rules.time"
+                            :loading="loading"
+                            :disabled="loading"
+                          >
+                          </v-select>
+                        </v-col>
+                      </v-row>
+                    </v-form>
                   </v-card-text>
                 </v-card>
 
-                <v-btn color="primary" @click="nextStep(2,3)"> Далее </v-btn>
+                <v-btn
+                  color="primary"
+                  @click="nextStep(2,3)"
+                  :loading="loading"
+                >
+                  Далее
+                </v-btn>
 
-                <v-btn text @click="step = 1"> Назад </v-btn>
+                <v-btn text @click="step = 1" :disabled="loading">
+                  Назад
+                </v-btn>
               </v-stepper-content>
 
               <v-stepper-content step="3">
@@ -206,25 +195,28 @@
                     >Вы выбрали:
                     <strong>
                       {{form.category}}. {{form.typeCar}}. По адресу:
-                      {{form.address}}. На {{form.selectDay}} в
-                      {{form.selectTime}}.</strong
+                      {{form.address}}. На {{form.date}} в
+                      {{form.time}}.</strong
                     >
                   </v-card-subtitle>
+                  <v-card-subtitle>
+                    <strong>Стоимость услуги: {{form.price}} руб.</strong>
+                  </v-card-subtitle>
                   <v-card-text>
-                    <v-form ref="formStep3" v-model="valid" lazy-validation>
+                    <v-form ref="formStep3" lazy-validation v-if="!complited">
                       <v-row>
                         <v-col lg="3" md="6" sm="6" cols="12">
                           <v-text-field
-                            v-model="name"
-                            :rules="nameRules"
+                            v-model="form.name"
+                            :rules="rules.name"
                             label="Имя"
                             required
                           ></v-text-field>
                         </v-col>
                         <v-col lg="3" md="6" sm="6" cols="12">
                           <v-text-field
-                            v-model="phone"
-                            :rules="phoneRules"
+                            v-model="form.phone"
+                            :rules="rules.phone"
                             :counter="16"
                             label="Телефон"
                             v-mask="'+7(###)###-##-##'"
@@ -235,16 +227,33 @@
                         </v-col>
                       </v-row>
                     </v-form>
+                    <div v-else>
+                      <v-alert type="success" max-width="450"
+                        >Ваша заявка на бронирование принята!</v-alert
+                      >
+                    </div>
                   </v-card-text>
                 </v-card>
 
-                <v-btn color="primary" @click="step = 1"> Далее </v-btn>
+                <v-btn
+                  color="primary"
+                  @click="saveData(3)"
+                  :loading="loading"
+                  :disabled="complited"
+                >
+                  Записаться
+                </v-btn>
 
-                <v-btn text @click="step = 2"> Назад </v-btn>
+                <v-btn text @click="step = 2" :disabled="loading || complited">
+                  Назад
+                </v-btn>
               </v-stepper-content>
             </v-stepper-items>
           </v-stepper>
         </v-main>
+        <v-snackbar color="primary" v-model="snackbar" :timeout="2000">
+          {{ msg }}
+        </v-snackbar>
       </v-app>
     </div>
 
@@ -253,107 +262,150 @@
 
     <script>
       new Vue({
-        el: '#app',
+        el: "#app",
         vuetify: new Vuetify({
           theme: {
             themes: {
               light: {
-                primary: '#79b285',
+                primary: "#79b285",
               },
             },
           },
         }),
         data() {
           return {
-            step: 2,
+            step: 1,
             datePicker: {
               min: null,
               max: null,
             },
             timePicker: {
-              times: [
-                '08:00',
-                '09:00',
-                '10:00',
-                '11:00',
-                '12:00',
-                '13:00',
-                '14:00',
-                '15:00',
-                '16:00',
-                '17:00',
-              ],
+              times: [],
             },
             form: {
               category: null,
               typeCar: null,
               address: null,
-              selectDay: null,
-              selectTime: null,
+              price: null,
+              date: null,
+              time: null,
+              phone: null,
+              name: null,
             },
-            errors: [],
-            valid: true,
-            name: '',
-            nameRules: [(v) => !!v || 'Заполните имя'],
-            phone: '',
-            phoneRules: [
-              (v) => !!v || 'Заполните телефон',
-              (v) => (v && v.length >= 16) || 'Внесите все цифры номера',
-            ],
+            rules: {
+              category: [(v) => !!v || "Выберите услугу"],
+              typeCar: [(v) => !!v || "Выберите тип ТС"],
+              address: [(v) => !!v || "Выберите адрес услуги"],
+              date: [(v) => !!v || "Выберите дату"],
+              time: [(v) => !!v || "Выберите время"],
+              name: [(v) => !!v || "Заполните имя"],
+              phone: [
+                (v) => !!v || "Заполните телефон",
+                (v) => (v && v.length >= 16) || "Введите полный номер",
+              ],
+            },
+            loading: false,
+            complited: false,
+            snackbar: false,
+            msg: "",
+            base_url: "https://gospts.ru/wp-json/vue-quiz/v1",
           };
         },
-        methods: {
-          nextStep(from, to) {
-            this.validate(from);
-
-            if (!this.errors.length) this.step = to;
-          },
-          validate(from) {
-            this.errors = [];
-            switch (from) {
-              case 1:
-                if (!this.form.category)
-                  this.errors.push({
-                    type: 'category',
-                    msg: 'Выберите категорию',
-                  });
-                if (!this.form.typeCar)
-                  this.errors.push({
-                    type: 'typeCar',
-                    msg: 'Выберите тип ТС',
-                  });
-                if (!this.form.address)
-                  this.errors.push({
-                    type: 'address',
-                    msg: 'Выберите адрес',
-                  });
+        watch: {
+          "form.address"(val) {
+            switch (val) {
+              case "Казань, ул. Заречная 3а (Константиновка) 1000 р":
+                this.form.price = 1000;
                 break;
-              case 2:
-                if (!this.form.selectTime)
-                  this.errors.push({
-                    type: 'selectTime',
-                    msg: 'Выберите время записи',
-                  });
+              default:
+                this.form.price = 1000;
             }
           },
-          getDate(date) {
-            let body = { date };
+        },
+        methods: {
+          async nextStep(from, to) {
+            if (this.validate(from)) {
+              if (from === 2 && to === 3) {
+                if (await this.checkTime(this.form.date, this.form.time)) {
+                  this.step = to;
+                }
+              } else {
+                this.step = to;
+              }
+            }
+          },
+          validate(from) {
+            return this.$refs[`formStep${from}`].validate();
+          },
+          /** Получении доступного времени */
+          getTime(date) {
+            this.loading = true;
+            this.form.date = date;
 
-            this.form.selectDay = date;
-
-            /** Запрос для получении инфы дня в т.ч. доступное время */
-
-            // fetch("/checkdate", {
-            //   method: "POST",
-            //   headers: {
-            //     "Content-Type": "application/json;charset=utf-8",
-            //   },
-            //   body: JSON.stringify(body),
-            // }).then((res) => {
-            //   res.json().then((data) => {
-            //     console.log(data);
-            //   });
-            // });
+            fetch(`${this.base_url}/getFreeTime`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json;charset=utf-8" },
+              body: JSON.stringify({ date }),
+            })
+              .then((res) => {
+                res.json().then((data) => {
+                  this.timePicker.times = data;
+                });
+              })
+              .finally(() => {
+                this.loading = false;
+              });
+          },
+          /** Проверки выбранного времени */
+          async checkTime(date, time) {
+            this.loading = true;
+            let result = false;
+            await fetch(`${this.base_url}/checkTime`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json;charset=utf-8" },
+              body: JSON.stringify({ date, time }),
+            })
+              .then(async (res) => {
+                await res.json().then((data) => {
+                  if (data.avail) {
+                    result = true;
+                  } else {
+                    this.msg = "Пожалуйста, выберите другое время";
+                    this.snackbar = true;
+                    this.getTime(date);
+                  }
+                });
+              })
+              .finally(() => {
+                this.loading = false;
+              });
+            return result;
+          },
+          saveData(step) {
+            this.loading = true;
+            if (this.validate(step)) {
+              fetch(`${this.base_url}/setData`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json;charset=utf-8" },
+                body: JSON.stringify(this.form),
+              })
+                .then((res) => {
+                  res.json().then((data) => {
+                    if (data.success) {
+                      this.complited = true;
+                    } else {
+                      this.snackbar = true;
+                      this.complited = false;
+                      this.msg = "Попробуйте позднее";
+                    }
+                  });
+                })
+                .finally(() => {
+                  this.loading = false;
+                });
+            } else {
+              return false;
+            }
           },
         },
         created() {
@@ -363,14 +415,14 @@
           this.datePicker.max = nextYearDate.toISOString().substr(0, 10);
         },
         mounted() {
-          this.getDate(
+          this.getTime(
             new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
               .toISOString()
               .substr(0, 10)
           );
         },
       });
-      Vue.directive('mask', VueMask.VueMaskDirective);
+      Vue.directive("mask", VueMask.VueMaskDirective);
     </script>
   </body>
 </html>
