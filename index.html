@@ -66,7 +66,7 @@
               <v-stepper-content step="1">
                 <v-card class="mb-12" flat>
                   <v-card-title
-                    >Пожалуйста, выберите ваши варианты</v-card-title
+                    >Выберите услугу и забронируйте очередь онлайн</v-card-title
                   >
                   <v-card-text>
                     <v-form ref="formStep1" lazy-validation>
@@ -146,7 +146,7 @@
                   <v-card-text>
                     <v-form ref="formStep2" lazy-validation>
                       <v-row>
-                        <v-col lg="3" md="6" sm="6" cols="12">
+                        <v-col lg="4" md="6" sm="6" cols="12">
                           <v-date-picker
                             locale="ru-RU"
                             :show-current="false"
@@ -157,6 +157,7 @@
                             full-width
                             :rules="rules.date"
                             @change="getTime(form.date)"
+                            style="min-height: 400px"
                           ></v-date-picker>
                         </v-col>
                         <v-col lg="3" md="6" sm="6" cols="12">
@@ -168,23 +169,29 @@
                             :loading="loading"
                             :disabled="loading"
                           >
+                            <template v-slot:no-data>
+                              <v-list-item>
+                                <v-list-item-title>
+                                  Нет свободного времени.
+                                  <strong>Выберите другой день</strong>
+                                </v-list-item-title>
+                              </v-list-item>
+                            </template>
                           </v-select>
                         </v-col>
                       </v-row>
                     </v-form>
                   </v-card-text>
                 </v-card>
-
+                <v-btn text @click="step = 1" :disabled="loading">
+                  Назад
+                </v-btn>
                 <v-btn
                   color="primary"
                   @click="nextStep(2,3)"
                   :loading="loading"
                 >
                   Далее
-                </v-btn>
-
-                <v-btn text @click="step = 1" :disabled="loading">
-                  Назад
                 </v-btn>
               </v-stepper-content>
 
@@ -205,7 +212,7 @@
                   <v-card-text>
                     <v-form ref="formStep3" lazy-validation v-if="!complited">
                       <v-row>
-                        <v-col lg="3" md="6" sm="6" cols="12">
+                        <v-col lg="4" md="6" sm="6" cols="12">
                           <v-text-field
                             v-model="form.name"
                             :rules="rules.name"
@@ -213,7 +220,7 @@
                             required
                           ></v-text-field>
                         </v-col>
-                        <v-col lg="3" md="6" sm="6" cols="12">
+                        <v-col lg="4" md="6" sm="6" cols="12">
                           <v-text-field
                             v-model="form.phone"
                             :rules="rules.phone"
@@ -234,6 +241,9 @@
                     </div>
                   </v-card-text>
                 </v-card>
+                <v-btn text @click="step = 2" :disabled="loading || complited">
+                  Назад
+                </v-btn>
 
                 <v-btn
                   color="primary"
@@ -242,10 +252,6 @@
                   :disabled="complited"
                 >
                   Записаться
-                </v-btn>
-
-                <v-btn text @click="step = 2" :disabled="loading || complited">
-                  Назад
                 </v-btn>
               </v-stepper-content>
             </v-stepper-items>
@@ -262,12 +268,12 @@
 
     <script>
       new Vue({
-        el: "#app",
+        el: '#app',
         vuetify: new Vuetify({
           theme: {
             themes: {
               light: {
-                primary: "#79b285",
+                primary: '#79b285',
               },
             },
           },
@@ -293,28 +299,28 @@
               name: null,
             },
             rules: {
-              category: [(v) => !!v || "Выберите услугу"],
-              typeCar: [(v) => !!v || "Выберите тип ТС"],
-              address: [(v) => !!v || "Выберите адрес услуги"],
-              date: [(v) => !!v || "Выберите дату"],
-              time: [(v) => !!v || "Выберите время"],
-              name: [(v) => !!v || "Заполните имя"],
+              category: [(v) => !!v || 'Выберите услугу'],
+              typeCar: [(v) => !!v || 'Выберите тип ТС'],
+              address: [(v) => !!v || 'Выберите адрес услуги'],
+              date: [(v) => !!v || 'Выберите дату'],
+              time: [(v) => !!v || 'Выберите время'],
+              name: [(v) => !!v || 'Заполните имя'],
               phone: [
-                (v) => !!v || "Заполните телефон",
-                (v) => (v && v.length >= 16) || "Введите полный номер",
+                (v) => !!v || 'Заполните телефон',
+                (v) => (v && v.length >= 16) || 'Введите полный номер',
               ],
             },
             loading: false,
             complited: false,
             snackbar: false,
-            msg: "",
-            base_url: "https://gospts.ru/wp-json/vue-quiz/v1",
+            msg: '',
+            base_url: 'https://gospts.ru/wp-json/vue-quiz/v1',
           };
         },
         watch: {
-          "form.address"(val) {
+          'form.address'(val) {
             switch (val) {
-              case "Казань, ул. Заречная 3а (Константиновка) 1000 р":
+              case 'Казань, ул. Заречная 3а (Константиновка) 1000 р':
                 this.form.price = 1000;
                 break;
               default:
@@ -343,8 +349,8 @@
             this.form.date = date;
 
             fetch(`${this.base_url}/getFreeTime`, {
-              method: "POST",
-              headers: { "Content-Type": "application/json;charset=utf-8" },
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json;charset=utf-8' },
               body: JSON.stringify({ date }),
             })
               .then((res) => {
@@ -361,8 +367,8 @@
             this.loading = true;
             let result = false;
             await fetch(`${this.base_url}/checkTime`, {
-              method: "POST",
-              headers: { "Content-Type": "application/json;charset=utf-8" },
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json;charset=utf-8' },
               body: JSON.stringify({ date, time }),
             })
               .then(async (res) => {
@@ -370,7 +376,7 @@
                   if (data.avail) {
                     result = true;
                   } else {
-                    this.msg = "Пожалуйста, выберите другое время";
+                    this.msg = 'Пожалуйста, выберите другое время';
                     this.snackbar = true;
                     this.getTime(date);
                   }
@@ -382,11 +388,11 @@
             return result;
           },
           saveData(step) {
-            this.loading = true;
             if (this.validate(step)) {
+              this.loading = true;
               fetch(`${this.base_url}/setData`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json;charset=utf-8" },
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json;charset=utf-8' },
                 body: JSON.stringify(this.form),
               })
                 .then((res) => {
@@ -396,7 +402,7 @@
                     } else {
                       this.snackbar = true;
                       this.complited = false;
-                      this.msg = "Попробуйте позднее";
+                      this.msg = 'Попробуйте позднее';
                     }
                   });
                 })
@@ -422,7 +428,25 @@
           );
         },
       });
-      Vue.directive("mask", VueMask.VueMaskDirective);
+      Vue.directive('mask', VueMask.VueMaskDirective);
     </script>
   </body>
+  <style>
+    #app label {
+      font-weight: normal;
+      margin-bottom: auto;
+    }
+    #app button {
+      padding: 0;
+    }
+    #app input[type='text'] {
+      background: none;
+      background-image: none;
+      border: 0;
+      border-radius: 0;
+    }
+    #app .v-date-picker-title__date {
+      font-size: 26px;
+    }
+  </style>
 </html>
